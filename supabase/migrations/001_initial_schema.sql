@@ -28,7 +28,7 @@ CREATE TABLE public.products (
   barcode TEXT,
   purchase_date DATE NOT NULL,
   warranty_months INTEGER NOT NULL DEFAULT 36,
-  warranty_end_date DATE GENERATED ALWAYS AS (purchase_date + (warranty_months || ' months')::INTERVAL) STORED,
+  warranty_end_date DATE NOT NULL,
   store_name TEXT NOT NULL DEFAULT '',
   purchase_price DECIMAL,
   notes TEXT,
