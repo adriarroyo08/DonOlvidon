@@ -1,0 +1,62 @@
+name: Build & Release APK
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  build-apk:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Expo & EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build APK
+        run: eas build --platform android --profile preview --non-interactive --local
+
+      - name: Get version
+        id: version
+        run: echo "version=$(node -p "require('./app.json').expo.version")" >> $GITHUB_OUTPUT
+
+      - name: Rename APK
+        run: mv ./build-*.apk ./don-olvidon-v${{ steps.version.outputs.version }}.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}-${{ github.run_number }}
+          name: Don Olvidon v${{ steps.version.outputs.version }} (Build ${{ github.run_number }})
+          body: |
+            ## Changes
+            ${{ github.event.pull_request.title }}
+
+            ${{ github.event.pull_request.body }}
+
+            ---
+            APK generado automaticamente al mergear PR #${{ github.event.pull_request.number }}
+          files: ./don-olvidon-v${{ steps.version.outputs.version }}.apk
+          generate_release_notes: true
