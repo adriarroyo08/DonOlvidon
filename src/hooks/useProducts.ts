@@ -92,11 +92,12 @@ export function useProducts() {
 
   const removeProduct = useCallback(
     async (id: string) => {
-      await deleteProduct(id);
-      await supabase.from('products').delete().eq('id', id);
+      if (!user) return;
+      await deleteProduct(id, user.id);
+      await supabase.from('products').delete().eq('id', id).eq('user_id', user.id);
       await loadProducts();
     },
-    [loadProducts]
+    [user, loadProducts]
   );
 
   const filtered = useMemo(() => {

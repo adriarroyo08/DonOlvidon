@@ -60,6 +60,19 @@ export default function AddProductScreen() {
       Alert.alert('Campo requerido', 'El nombre del producto es obligatorio.');
       return;
     }
+    if (purchaseDate && !/^\d{4}-\d{2}-\d{2}$/.test(purchaseDate)) {
+      Alert.alert('Fecha inválida', 'El formato de fecha debe ser AAAA-MM-DD.');
+      return;
+    }
+    if (purchaseDate && isNaN(new Date(purchaseDate).getTime())) {
+      Alert.alert('Fecha inválida', 'La fecha de compra no es válida.');
+      return;
+    }
+    const parsedPrice = price ? parseFloat(price) : null;
+    if (parsedPrice !== null && (isNaN(parsedPrice) || parsedPrice < 0)) {
+      Alert.alert('Precio inválido', 'Introduce un precio válido (número positivo).');
+      return;
+    }
     setSaving(true);
     try {
       await addProduct({
@@ -72,7 +85,7 @@ export default function AddProductScreen() {
         purchase_date: purchaseDate,
         warranty_months: warrantyMonths,
         store_name: storeName.trim(),
-        purchase_price: price ? parseFloat(price) : null,
+        purchase_price: parsedPrice,
         notes: notes.trim() || null,
         is_second_hand: isSecondHand,
       });

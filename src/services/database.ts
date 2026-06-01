@@ -82,13 +82,13 @@ export async function getProductById(id: string): Promise<Product | null> {
 
 export async function updateProduct(product: Product): Promise<void> {
   await db.runAsync(
-    `UPDATE products SET name=?, brand=?, model=?, category=?, barcode=?, purchase_date=?, warranty_months=?, warranty_end_date=?, store_name=?, purchase_price=?, notes=?, is_second_hand=?, status=?, synced=0 WHERE id=?`,
-    [product.name, product.brand, product.model, product.category, product.barcode, product.purchase_date, product.warranty_months, product.warranty_end_date, product.store_name, product.purchase_price, product.notes, product.is_second_hand ? 1 : 0, product.status, product.id]
+    `UPDATE products SET name=?, brand=?, model=?, category=?, barcode=?, purchase_date=?, warranty_months=?, warranty_end_date=?, store_name=?, purchase_price=?, notes=?, is_second_hand=?, status=?, synced=0 WHERE id=? AND user_id=?`,
+    [product.name, product.brand, product.model, product.category, product.barcode, product.purchase_date, product.warranty_months, product.warranty_end_date, product.store_name, product.purchase_price, product.notes, product.is_second_hand ? 1 : 0, product.status, product.id, product.user_id]
   );
 }
 
-export async function deleteProduct(id: string): Promise<void> {
-  await db.runAsync('DELETE FROM products WHERE id = ?', [id]);
+export async function deleteProduct(id: string, userId: string): Promise<void> {
+  await db.runAsync('DELETE FROM products WHERE id = ? AND user_id = ?', [id, userId]);
 }
 
 export async function getUnsyncedProducts(): Promise<Product[]> {

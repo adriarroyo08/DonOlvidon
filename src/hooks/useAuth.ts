@@ -20,8 +20,9 @@ export function useAuth() {
   });
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setState({ session, user: session?.user ?? null, loading: false });
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) console.warn('getSession error:', error.message);
+      setState({ session: session ?? null, user: session?.user ?? null, loading: false });
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {

@@ -50,10 +50,20 @@ export default function ProductDetailScreen() {
     loadReceipts();
   }, [loadReceipts]);
 
-  const getReceiptUrl = (path: string) => {
-    const { data } = supabase.storage.from('receipts').getPublicUrl(path);
-    return data.publicUrl;
-  };
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (receipts.length === 0) return;
+    const loadUrls = async () => {
+      const urls: Record<string, string> = {};
+      for (const r of receipts) {
+        const { data } = await supabase.storage.from('receipts').createSignedUrl(r.storage_path, 3600);
+        if (data?.signedUrl) urls[r.storage_path] = data.signedUrl;
+      }
+      setSignedUrls(urls);
+    };
+    loadUrls();
+  }, [receipts]);
 
   const handleAddReceipt = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -204,7 +214,7 @@ export default function ProductDetailScreen() {
                 {receipts.map((r) => (
                   <Image
                     key={r.id}
-                    source={{ uri: getReceiptUrl(r.storage_path) }}
+                    source={signedUrls[r.storage_path] ? { uri: signedUrls[r.storage_path] } : undefined}
                     style={[styles.receiptThumb, { borderColor: colors.border }]}
                     resizeMode="cover"
                   />
