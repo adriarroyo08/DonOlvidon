@@ -87,6 +87,10 @@ export default function ProductDetailScreen() {
 
       const response = await fetch(asset.uri);
       const blob = await response.blob();
+      if (blob.size > 10 * 1024 * 1024) {
+        Alert.alert('Error', 'La imagen es demasiado grande (máx. 10 MB).');
+        return;
+      }
       const { error } = await supabase.storage.from('receipts').upload(path, blob);
 
       if (error) throw error;
