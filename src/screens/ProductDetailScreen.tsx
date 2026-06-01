@@ -82,7 +82,9 @@ export default function ProductDetailScreen() {
     setUploading(true);
     try {
       const asset = result.assets[0];
-      const ext = asset.uri.split('.').pop() ?? 'jpg';
+      const ALLOWED_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'heic'];
+      const rawExt = asset.uri.split('.').pop()?.toLowerCase() ?? 'jpg';
+      const ext = ALLOWED_EXTS.includes(rawExt) ? rawExt : 'jpg';
       const path = `${product.user_id}/${product.id}/${crypto.randomUUID()}.${ext}`;
 
       const response = await fetch(asset.uri);

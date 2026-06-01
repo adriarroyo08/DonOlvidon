@@ -30,8 +30,9 @@ export default function SettingsScreen() {
       });
   }, [user]);
 
+  const ALLOWED_PREF_FIELDS = ['notify_30d', 'notify_7d', 'notify_1d'] as const;
   const updatePref = async (field: string, value: boolean) => {
-    if (!user) return;
+    if (!user || !ALLOWED_PREF_FIELDS.includes(field as any)) return;
     await supabase.from('users').update({ [field]: value }).eq('id', user.id);
   };
 
