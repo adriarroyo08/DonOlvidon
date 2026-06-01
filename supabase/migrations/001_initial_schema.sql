@@ -79,6 +79,8 @@ CREATE POLICY "Users can update own profile"
   ON public.users FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "Users can insert own profile"
   ON public.users FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users can delete own profile"
+  ON public.users FOR DELETE USING (auth.uid() = id);
 
 -- Products: own products only
 CREATE POLICY "Users can view own products"
