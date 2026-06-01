@@ -46,9 +46,16 @@ export default function SettingsScreen() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            await supabase.from('products').delete().eq('user_id', user!.id);
-            await supabase.from('users').delete().eq('id', user!.id);
-            await signOut();
+            try {
+              const { error: prodErr } = await supabase.from('products').delete().eq('user_id', user!.id);
+              if (prodErr) throw prodErr;
+              const { error: userErr } = await supabase.from('users').delete().eq('id', user!.id);
+              if (userErr) throw userErr;
+              await signOut();
+            } catch (err) {
+              Alert.alert('Error', 'No se pudo eliminar la cuenta. Inténtalo de nuevo.');
+              return;
+            }
           },
         },
       ]

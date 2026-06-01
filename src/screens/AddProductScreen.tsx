@@ -69,7 +69,7 @@ export default function AddProductScreen() {
       return;
     }
     const parsedPrice = price ? parseFloat(price) : null;
-    if (parsedPrice !== null && (isNaN(parsedPrice) || parsedPrice < 0)) {
+    if (parsedPrice !== null && (isNaN(parsedPrice) || parsedPrice < 0 || parsedPrice > 999999.99)) {
       Alert.alert('Precio inválido', 'Introduce un precio válido (número positivo).');
       return;
     }

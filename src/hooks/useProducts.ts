@@ -33,7 +33,8 @@ export function useProducts() {
         .from('products')
         .select('*')
         .eq('user_id', user.id)
-        .order('warranty_end_date', { ascending: true });
+        .order('warranty_end_date', { ascending: true })
+        .limit(500);
 
       if (data && !error) {
         setProducts(data);

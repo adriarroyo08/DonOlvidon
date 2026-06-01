@@ -2,9 +2,17 @@ import * as SQLite from 'expo-sqlite';
 import { Product, Receipt } from '../types';
 
 let db: SQLite.SQLiteDatabase;
+let initPromise: Promise<void> | null = null;
 
 export async function initDatabase(): Promise<void> {
+  if (initPromise) return initPromise;
+  initPromise = _initDatabase();
+  return initPromise;
+}
+
+async function _initDatabase(): Promise<void> {
   db = await SQLite.openDatabaseAsync('donolvidon.db');
+  await db.execAsync('PRAGMA foreign_keys = ON;');
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
