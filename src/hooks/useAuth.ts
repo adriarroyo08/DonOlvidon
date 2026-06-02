@@ -20,16 +20,23 @@ export function useAuth() {
   });
 
   useEffect(() => {
+    let isMounted = true;
+
     supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (!isMounted) return;
       if (error) console.warn('getSession error:', error.message);
       setState({ session: session ?? null, user: session?.user ?? null, loading: false });
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!isMounted) return;
       setState({ session, user: session?.user ?? null, loading: false });
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
