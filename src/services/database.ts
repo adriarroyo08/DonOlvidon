@@ -100,7 +100,7 @@ export async function deleteProduct(id: string, userId: string): Promise<void> {
 }
 
 export async function getUnsyncedProducts(): Promise<Product[]> {
-  const rows = await db.getAllAsync<any>('SELECT * FROM products WHERE synced = 0');
+  const rows = await db.getAllAsync<any>('SELECT * FROM products WHERE synced = 0 LIMIT 500');
   return rows.map((r) => ({ ...r, is_second_hand: !!r.is_second_hand }));
 }
 
