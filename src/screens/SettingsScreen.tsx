@@ -21,7 +21,11 @@ export default function SettingsScreen() {
       .select('notify_30d, notify_7d, notify_1d')
       .eq('id', user.id)
       .single()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) {
+          console.warn('Failed to load notification preferences:', error.message);
+          return;
+        }
         if (data) {
           setNotify30d(data.notify_30d);
           setNotify7d(data.notify_7d);
@@ -33,7 +37,8 @@ export default function SettingsScreen() {
   const ALLOWED_PREF_FIELDS = ['notify_30d', 'notify_7d', 'notify_1d'] as const;
   const updatePref = async (field: string, value: boolean) => {
     if (!user || !ALLOWED_PREF_FIELDS.includes(field as any)) return;
-    await supabase.from('users').update({ [field]: value }).eq('id', user.id);
+    const { error } = await supabase.from('users').update({ [field]: value }).eq('id', user.id);
+    if (error) console.warn('Failed to update preference:', error.message);
   };
 
   const handleDeleteAccount = () => {

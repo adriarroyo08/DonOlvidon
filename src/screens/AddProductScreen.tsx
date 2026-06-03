@@ -126,6 +126,7 @@ export default function AddProductScreen() {
             onChangeText={setName}
             placeholder="Ej: Television Samsung"
             placeholderTextColor={colors.textSecondary}
+            maxLength={200}
           />
 
           <Text style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.sm, marginBottom: 4 }]}>
@@ -137,6 +138,7 @@ export default function AddProductScreen() {
             onChangeText={setBrand}
             placeholder="Ej: Samsung"
             placeholderTextColor={colors.textSecondary}
+            maxLength={100}
           />
 
           <Text style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.sm, marginBottom: 4 }]}>
@@ -148,6 +150,7 @@ export default function AddProductScreen() {
             onChangeText={setModel}
             placeholder="Ej: UE55AU7175"
             placeholderTextColor={colors.textSecondary}
+            maxLength={100}
           />
         </GlassCard>
 
@@ -191,6 +194,7 @@ export default function AddProductScreen() {
             onChangeText={setStoreName}
             placeholder="Ej: MediaMarkt"
             placeholderTextColor={colors.textSecondary}
+            maxLength={200}
           />
 
           <Text style={[typography.caption, { color: colors.textSecondary, marginTop: spacing.sm, marginBottom: 4 }]}>
@@ -245,6 +249,7 @@ export default function AddProductScreen() {
             placeholderTextColor={colors.textSecondary}
             multiline
             numberOfLines={3}
+            maxLength={1000}
           />
         </GlassCard>
 

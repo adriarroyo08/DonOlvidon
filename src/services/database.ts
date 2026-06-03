@@ -77,7 +77,7 @@ export async function insertProduct(product: Product): Promise<void> {
 
 export async function getProducts(userId: string): Promise<Product[]> {
   const rows = await db.getAllAsync<any>(
-    'SELECT * FROM products WHERE user_id = ? ORDER BY warranty_end_date ASC',
+    'SELECT * FROM products WHERE user_id = ? ORDER BY warranty_end_date ASC LIMIT 1000',
     [userId]
   );
   return rows.map((r) => ({ ...r, is_second_hand: !!r.is_second_hand }));
