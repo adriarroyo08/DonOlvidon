@@ -54,15 +54,18 @@ export default function ProductDetailScreen() {
 
   useEffect(() => {
     if (receipts.length === 0) return;
+    let cancelled = false;
     const loadUrls = async () => {
       const urls: Record<string, string> = {};
       for (const r of receipts) {
+        if (cancelled) return;
         const { data } = await supabase.storage.from('receipts').createSignedUrl(r.storage_path, 3600);
         if (data?.signedUrl) urls[r.storage_path] = data.signedUrl;
       }
-      setSignedUrls(urls);
+      if (!cancelled) setSignedUrls(urls);
     };
     loadUrls();
+    return () => { cancelled = true; };
   }, [receipts]);
 
   const handleAddReceipt = async () => {
